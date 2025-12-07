@@ -1,0 +1,30 @@
+name: Build and Deploy API
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: auth-api-jar
+        path: target/*.jar
