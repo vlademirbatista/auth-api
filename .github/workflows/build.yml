@@ -3,28 +3,67 @@ name: Build and Deploy API v2
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out repository
+    - name: Baixar código
       uses: actions/checkout@v3
 
-    - name: Set up Java
+    - name: Configurar Java 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Maven
+    - name: Construir pacote (Maven)
       run: mvn -B package -DskipTests --file pom.xml
 
-    - name: Upload artifact
+    - name: Guardar o arquivo JAR
       uses: actions/upload-artifact@v4
       with:
-        name: auth-api-jar
+        name: api-package
         path: target/*.jar
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Baixar o arquivo JAR
+      uses: actions/download-artifact@v4
+      with:
+        name: api-package
+
+    - name: Enviar para EC2 e Rodar
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_VLAD }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY_VLAD }}
+        script: |
+          # Mata o processo antigo se existir
+          sudo pkill -f 'java -jar' || true
+          # Cria a pasta se não existir
+          mkdir -p /home/ubuntu/app
+          # Limpa jars antigos
+          rm -f /home/ubuntu/app/*.jar
+        
+    - name: Copiar arquivo via SCP
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_VLAD }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY_VLAD }}
+        source: "*.jar"
+        target: "/home/ubuntu/app"
+
+    - name: Iniciar Aplicação
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST_VLAD }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY_VLAD }}
+        script: |
+          # Roda o app em segundo plano e salva o log
+          nohup java -jar /home/ubuntu/app/*.jar > /home/ubuntu/app/log.txt 2>&1 &
