@@ -29,8 +29,10 @@ public class AuthApiController {
     }
 
     // DTO de entrada
-    public record LoginRequest(String email, String senha) {}
+    public record LoginRequest(String email, String senha) {
+    }
 
     // DTO de saída simples
-    public record Mensagem(String message) {}
+    public record Mensagem(String message) {
+    }
 }
