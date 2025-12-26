@@ -28,6 +28,24 @@ public class AuthApiController {
                         .body(new Mensagem("Credenciais inválidas")));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegistroDTO request) {
+        if (usuarioRepository.existsByEmail(request.email())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Mensagem("Email já cadastrado"));
+        }
+
+        Usuario novoUsuario = new Usuario();
+        novoUsuario.setNome(request.nome());
+        novoUsuario.setEmail(request.email());
+        novoUsuario.setSenha(request.senha()); // Em produção, usar BCrypt aqui!
+        novoUsuario.setCriadoEm(java.time.LocalDateTime.now());
+
+        usuarioRepository.save(novoUsuario);
+
+        return ResponseEntity.ok().body(new Mensagem("Usuário cadastrado com sucesso"));
+    }
+
     // DTO de entrada
     public record LoginRequest(String email, String senha) {
     }

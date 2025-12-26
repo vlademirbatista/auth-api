@@ -1,11 +1,13 @@
 import { useState } from 'react'
 
 function App() {
+  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isRegistering, setIsRegistering] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -13,21 +15,31 @@ function App() {
     setError('')
     setIsLoading(true)
 
+    const endpoint = isRegistering ? '/api/register' : '/api/login'
+    const body = isRegistering ? { nome, email, senha } : { email, senha }
+
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, senha }),
+        body: JSON.stringify(body),
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        setMessage(data.message || 'Login realizado com sucesso!')
+        if (isRegistering) {
+          setMessage('Cadastro realizado com sucesso! Faça login.')
+          setIsRegistering(false)
+          setNome('')
+          setSenha('')
+        } else {
+          setMessage(data.message || 'Login realizado com sucesso!')
+        }
       } else {
-        setError(data.message || 'Falha no login')
+        setError(data.message || (isRegistering ? 'Falha no cadastro' : 'Falha no login'))
       }
     } catch (err) {
       setError('Erro ao conectar com o servidor')
@@ -40,11 +52,28 @@ function App() {
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">Bem-vindo(a)</h2>
-          <p className="text-gray-400">Faça login para continuar</p>
+          <h2 className="text-3xl font-bold text-white mb-2">{isRegistering ? 'Crie sua conta' : 'Bem-vindo(a)'}</h2>
+          <p className="text-gray-400">{isRegistering ? 'Preencha os dados abaixo' : 'Faça login para continuar'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {isRegistering && (
+            <div>
+              <label htmlFor="nome" className="block text-sm font-medium text-gray-300 mb-2">
+                Nome
+              </label>
+              <input
+                id="nome"
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Seu Nome"
+                required
+              />
+            </div>
+          )}
+
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
               Email
@@ -87,13 +116,29 @@ function App() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Entrando...
+                Processing...
               </span>
             ) : (
-              'Entrar'
+              isRegistering ? 'Cadastrar' : 'Entrar'
             )}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-400">
+            {isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?'}
+            <button
+              onClick={() => {
+                setIsRegistering(!isRegistering)
+                setMessage('')
+                setError('')
+              }}
+              className="ml-2 text-blue-400 hover:text-blue-300 font-medium focus:outline-none hover:underline"
+            >
+              {isRegistering ? 'Faça login' : 'Cadastre-se'}
+            </button>
+          </p>
+        </div>
 
         {message && (
           <div className="mt-6 p-4 bg-green-900/50 border border-green-500/50 rounded-lg">
