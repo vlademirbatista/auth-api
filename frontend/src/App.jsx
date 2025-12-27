@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Mail, Lock, User } from 'lucide-react'
 
 function App() {
   const [nome, setNome] = useState('')
@@ -49,65 +50,80 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-bg-primary to-bg-primary flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-bg-secondary/70 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-white/10">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">{isRegistering ? 'Crie sua conta' : 'Bem-vindo(a)'}</h2>
-          <p className="text-gray-400">{isRegistering ? 'Preencha os dados abaixo' : 'Faça login para continuar'}</p>
+          <h2 className="text-3xl font-bold text-text-primary mb-2">{isRegistering ? 'Crie sua conta' : 'Bem-vindo(a)'}</h2>
+          <p className="text-text-secondary">{isRegistering ? 'Preencha os dados abaixo' : 'Faça login para continuar'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {isRegistering && (
             <div>
-              <label htmlFor="nome" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="nome" className="block text-sm font-medium text-text-secondary mb-2">
                 Nome
               </label>
-              <input
-                id="nome"
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="Seu Nome"
-                required
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-text-secondary" />
+                </div>
+                <input
+                  id="nome"
+                  type="text"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-text-primary placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-300"
+                  placeholder="Seu Nome"
+                  required
+                />
+              </div>
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-              placeholder="seu@email.com"
-              required
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-text-secondary" />
+              </div>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-text-primary placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-300"
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
           </div>
 
           <div>
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="senha" className="block text-sm font-medium text-text-secondary mb-2">
               Senha
             </label>
-            <input
-              id="senha"
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-              placeholder="••••••••"
-              required
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-text-secondary" />
+              </div>
+              <input
+                id="senha"
+                type="password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-text-primary placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-300"
+                placeholder="••••••••"
+                required
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''
+            className={`block w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-hover text-white font-bold rounded-lg shadow-lg shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-bg-secondary transition-all duration-300 hover:brightness-110 transform hover:scale-[1.02] active:scale-[0.98] ${isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
           >
             {isLoading ? (
@@ -125,7 +141,7 @@ function App() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-400">
+          <p className="text-text-secondary">
             {isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?'}
             <button
               onClick={() => {
@@ -133,7 +149,7 @@ function App() {
                 setMessage('')
                 setError('')
               }}
-              className="ml-2 text-blue-400 hover:text-blue-300 font-medium focus:outline-none hover:underline"
+              className="ml-2 text-primary hover:text-cyan-400 font-medium focus:outline-none hover:underline transition-colors duration-200"
             >
               {isRegistering ? 'Faça login' : 'Cadastre-se'}
             </button>
@@ -141,14 +157,14 @@ function App() {
         </div>
 
         {message && (
-          <div className="mt-6 p-4 bg-green-900/50 border border-green-500/50 rounded-lg">
-            <p className="text-green-400 text-center text-sm">{message}</p>
+          <div className="mt-6 p-4 bg-success/20 border border-success/50 rounded-lg">
+            <p className="text-success text-center text-sm">{message}</p>
           </div>
         )}
 
         {error && (
-          <div className="mt-6 p-4 bg-red-900/50 border border-red-500/50 rounded-lg">
-            <p className="text-red-400 text-center text-sm">{error}</p>
+          <div className="mt-6 p-4 bg-danger/20 border border-danger/50 rounded-lg">
+            <p className="text-danger text-center text-sm">{error}</p>
           </div>
         )}
       </div>
