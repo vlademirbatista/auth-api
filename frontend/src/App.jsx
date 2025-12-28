@@ -17,6 +17,7 @@ function App() {
     setError('')
     setIsLoading(true)
 
+    // Use relative paths for production (Nginx proxy) and development (Vite proxy)
     const endpoint = isRegistering ? '/api/register' : '/api/login'
     const body = isRegistering ? { nome, email, senha, telefone } : { email, senha }
 
