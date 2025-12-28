@@ -39,6 +39,7 @@ public class AuthApiController {
         novoUsuario.setNome(request.nome());
         novoUsuario.setEmail(request.email());
         novoUsuario.setSenha(request.senha()); // Em produção, usar BCrypt aqui!
+        novoUsuario.setTelefone(request.telefone());
         novoUsuario.setCriadoEm(java.time.LocalDateTime.now());
 
         usuarioRepository.save(novoUsuario);

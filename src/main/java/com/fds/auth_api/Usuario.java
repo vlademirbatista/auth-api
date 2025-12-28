@@ -19,7 +19,8 @@ public class Usuario {
     private LocalDateTime criadoEm;
 
     // Construtor vazio obrigatório para o JPA
-    public Usuario() {}
+    public Usuario() {
+    }
 
     // Getters e setters (pode gerar depois com IDE, mas deixo prontos aqui)
 
@@ -62,4 +63,15 @@ public class Usuario {
     public void setCriadoEm(LocalDateTime criadoEm) {
         this.criadoEm = criadoEm;
     }
+
+    private String telefone;
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
 }
