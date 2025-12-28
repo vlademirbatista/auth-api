@@ -60,8 +60,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "target/*.jar,frontend-dist/*"
-          target: "/home/ubuntu/deploy_cache/"
+          source: "target,frontend-dist"
+          target: "/home/ubuntu/deploy_cache"
           
       - name: Configure Production
         uses: appleboy/ssh-action@v1.0.3
@@ -70,6 +70,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Debug: List files to verify transfer
+            echo "Listing deploy_cache:"
+            ls -R /home/ubuntu/deploy_cache
+
             # 1. Setup Backend
             echo "Deploying Backend..."
             mkdir -p /home/ubuntu/app
@@ -81,7 +85,16 @@ jobs:
             sudo mkdir -p /var/www/html
             # Clean old files to avoid conflicts
             sudo rm -rf /var/www/html/*
-            sudo cp -r /home/ubuntu/deploy_cache/frontend-dist/* /var/www/html/
+            
+            # Copy contents. Note: based on SCP, it might be in frontend-dist folder
+            if [ -d "/home/ubuntu/deploy_cache/frontend-dist" ]; then
+              sudo cp -r /home/ubuntu/deploy_cache/frontend-dist/* /var/www/html/
+            else
+              # Fallback if scp flattened it
+              sudo cp -r /home/ubuntu/deploy_cache/* /var/www/html/ 2>/dev/null || true
+              # Remove jar from www if it got there
+              sudo rm -f /var/www/html/*.jar
+            fi
             
             # Fix Permissions (Critical for Nginx 500 Error)
             sudo chown -R www-data:www-data /var/www/html
