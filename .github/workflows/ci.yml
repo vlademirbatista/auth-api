@@ -114,5 +114,15 @@ jobs:
             
             # 4. Clean up and Restart
             rm -rf /home/ubuntu/deploy_cache
-            sudo nginx -t && sudo systemctl restart nginx
+            if ! sudo nginx -t; then
+                echo "Nginx config invalid! Dumping logs:"
+                sudo tail -n 50 /var/log/nginx/error.log
+                exit 1
+            fi
+            
+            sudo systemctl restart nginx
+            
+            echo "--- DEBUG: Nginx Error Log (Last 50 lines) ---"
+            sudo tail -n 50 /var/log/nginx/error.log
+            
             echo "Deployment Complete!"
