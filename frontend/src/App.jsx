@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Mail, Lock, User } from 'lucide-react'
+import { Mail, Lock, User, Phone } from 'lucide-react'
 
 function App() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [telefone, setTelefone] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -17,7 +18,7 @@ function App() {
     setIsLoading(true)
 
     const endpoint = isRegistering ? '/api/register' : '/api/login'
-    const body = isRegistering ? { nome, email, senha } : { email, senha }
+    const body = isRegistering ? { nome, email, senha, telefone } : { email, senha }
 
     try {
       const response = await fetch(endpoint, {
@@ -36,6 +37,7 @@ function App() {
           setIsRegistering(false)
           setNome('')
           setSenha('')
+          setTelefone('')
         } else {
           setMessage(data.message || 'Login realizado com sucesso!')
         }
@@ -74,6 +76,28 @@ function App() {
                   onChange={(e) => setNome(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-text-primary placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-300"
                   placeholder="Seu Nome"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {isRegistering && (
+            <div>
+              <label htmlFor="telefone" className="block text-sm font-medium text-text-secondary mb-2">
+                Telefone
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-text-secondary" />
+                </div>
+                <input
+                  id="telefone"
+                  type="text"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-lg text-text-primary placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition duration-300"
+                  placeholder="Telefone"
                   required
                 />
               </div>
