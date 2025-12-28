@@ -83,6 +83,10 @@ jobs:
             sudo rm -rf /var/www/html/*
             sudo cp -r /home/ubuntu/deploy_cache/frontend-dist/* /var/www/html/
             
+            # Fix Permissions (Critical for Nginx 500 Error)
+            sudo chown -R www-data:www-data /var/www/html
+            sudo chmod -R 755 /var/www/html
+            
             # 3. Configure Nginx (Full Overwrite to avoid conflicts)
             echo "Configuring Nginx..."
             sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/default
