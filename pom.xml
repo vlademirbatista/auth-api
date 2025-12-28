@@ -99,23 +99,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-frontend-resources</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/classes/static</outputDirectory>
-							<resources>
-								<resource>
-									<directory>frontend/dist</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
+
 			</plugin>
 		</plugins>
 	</build>
