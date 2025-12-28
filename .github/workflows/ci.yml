@@ -26,6 +26,12 @@ jobs:
           name: app-jar
           path: target/*.jar
 
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v4
         with:
