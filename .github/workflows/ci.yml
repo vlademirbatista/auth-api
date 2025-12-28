@@ -112,6 +112,10 @@ jobs:
             echo "Configuring Nginx with static file..."
             sudo cp /home/ubuntu/deploy_cache/nginx.conf /etc/nginx/sites-available/default
             
+            # FORCE Enable Site
+            sudo rm -f /etc/nginx/sites-enabled/*
+            sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+            
             # 4. Clean up and Restart
             rm -rf /home/ubuntu/deploy_cache
             if ! sudo nginx -t; then
