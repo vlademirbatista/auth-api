@@ -12,6 +12,7 @@
 	<artifactId>auth-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>auth-api</name>
+	<!-- Triggering CI/CD redeploy -->
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
