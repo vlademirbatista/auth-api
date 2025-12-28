@@ -53,3 +53,27 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo systemctl restart auth-api || echo "Service not configured yet"
+
+            # Check if /api/ location exists, if not add it
+            if ! grep -q "location /api/" /etc/nginx/sites-available/default; then
+              echo "Configuring Nginx proxy for /api/..."
+              # Remove the last line (assuming it is the closing brace '}')
+              sudo sed -i '$d' /etc/nginx/sites-available/default
+              
+              # Append the new location block and the closing brace
+              sudo bash -c 'cat <<EOF >> /etc/nginx/sites-available/default
+              
+              location /api/ {
+                  proxy_pass http://localhost:8080;
+                  proxy_set_header Host \$host;
+                  proxy_set_header X-Real-IP \$remote_addr;
+                  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+              }
+            }
+            EOF'
+              
+              # Validate and reload
+              sudo nginx -t && sudo systemctl reload nginx
+            else
+              echo "Nginx already configured for /api/"
+            fi
