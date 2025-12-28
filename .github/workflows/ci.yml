@@ -60,7 +60,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "target,frontend-dist"
+          source: "target,frontend-dist,nginx.conf"
           target: "/home/ubuntu/deploy_cache"
           
       - name: Configure Production
@@ -108,34 +108,10 @@ jobs:
             sudo find /var/www/html -type d -exec chmod 755 {} \;
             sudo find /var/www/html -type f -exec chmod 644 {} \;
             
-            # 3. Configure Nginx (Full Overwrite to avoid conflicts)
-            echo "Configuring Nginx..."
-            sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/default
-            server {
-                listen 80 default_server;
-                listen [::]:80 default_server;
-
-                root /var/www/html;
-                index index.html index.htm index.nginx-debian.html;
-
-                server_name _;
-
-                # Serve React Frontend
-                location / {
-                    try_files \$uri \$uri/ /index.html;
-                }
-
-                # Proxy API to Spring Boot
-                location /api/ {
-                    proxy_pass http://localhost:8080;
-                    proxy_set_header Host \$host;
-                    proxy_set_header X-Real-IP \$remote_addr;
-                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto \$scheme;
-                }
-            }
-            EOF'
-
+            # 3. Configure Nginx (Copy static file)
+            echo "Configuring Nginx with static file..."
+            sudo cp /home/ubuntu/deploy_cache/nginx.conf /etc/nginx/sites-available/default
+            
             # 4. Clean up and Restart
             rm -rf /home/ubuntu/deploy_cache
             sudo nginx -t && sudo systemctl restart nginx
